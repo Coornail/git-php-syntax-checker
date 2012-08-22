@@ -7,9 +7,6 @@ LIST=$(git diff-index --cached --name-status HEAD | grep  -E "^(A|C|M|R)")
 ERRORS_BUFFER=""
 for file in $LIST
 do
-    if [ "$file" == '#' ]; then
-        continue
-    fi
     if [ $(echo "$file" | grep 'modified') ]; then
         FILE_ACTION="modified"
     elif [ $(echo "$file" | grep 'added') ]; then
