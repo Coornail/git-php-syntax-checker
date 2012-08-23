@@ -3,7 +3,7 @@
 # Author: Vytautas Povilaitis <php-checker@vytux.lt>
 
 ROOT_DIR="$(pwd)/"
-LIST=$(git diff-index --cached --name-status HEAD | grep  -E "^(A|C|M|R)")
+LIST=$(git diff-index --cached --name-status HEAD | grep  -E "^(A|C|M|R)" | awk {'print $2'})
 ERRORS_BUFFER=""
 for file in $LIST
 do
