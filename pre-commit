@@ -27,10 +27,8 @@ done
 
 # Print errors
 if [ "$ERRORS_BUFFER" != "" ]; then
-    echo "These errors were found in try-to-commit files: "
+    echo "Errors found in index:"
     echo -e $ERRORS_BUFFER
-    echo
-    echo "Can't commit, fix errors first."
     exit 1
 else
     echo "Commited successfully."
