@@ -7,26 +7,23 @@ LIST=$(git diff-index --cached --name-status HEAD | grep  -E "^(A|C|M|R)" | awk 
 ERRORS_BUFFER=""
 for file in $LIST
 do
-    if [ $(echo "$file" | grep 'modified') ]; then
-        FILE_ACTION="modified"
-    elif [ $(echo "$file" | grep 'added') ]; then
-        FILE_ACTION="added"
-    else
-        EXTENSION=$(echo "$file" | grep -E ".php$|.module$|.inc$|.install$")
-        if [ "$EXTENSION" != "" ]; then
-            echo "Checking $FILE_ACTION file: $file"
-            ERRORS=$(php -l $ROOT_DIR$file 2>&1 | grep "Parse error")
-            if [ "$ERRORS" != "" ]; then
-                if [ "$ERRORS_BUFFER" != "" ]; then
-                    ERRORS_BUFFER="$ERRORS_BUFFER\n$ERRORS"
-                else
-                    ERRORS_BUFFER="$ERRORS"
-                fi
-                echo "Syntax errors found in file: $file "
-            fi
-        fi
+  # PHP syntax check for php files
+  EXTENSION=$(echo "$file" | grep -E ".php$|.module$|.inc$|.install$")
+  if [ "$EXTENSION" != "" ]; then
+    echo "Checking file: $file"
+    ERRORS=$(php -l $ROOT_DIR$file 2>&1 | grep "Parse error")
+    if [ "$ERRORS" != "" ]; then
+      if [ "$ERRORS_BUFFER" != "" ]; then
+        ERRORS_BUFFER="$ERRORS_BUFFER\n* $ERRORS"
+      else
+        ERRORS_BUFFER="$ERRORS"
+      fi
+      echo "Syntax errors found in file: $file "
     fi
+  fi
 done
+
+# Print errors
 if [ "$ERRORS_BUFFER" != "" ]; then
     echo
     echo "These errors were found in try-to-commit files: "
