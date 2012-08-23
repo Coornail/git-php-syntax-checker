@@ -9,7 +9,7 @@ ERRORS_BUFFER=""
 for file in $LIST
 do
   # Check for conflict markers
-  ERRORS=$(grep '>>>>>>' $file | grep -v 'Binary')
+  ERRORS=$(grep -E '>>[>*]>>|<<[<*]<<|==[=*]==' $file | grep -v 'Binary')
   if [ "$ERRORS" != "" ]; then
     ERRORS_BUFFER="$ERRORS_BUFFER- Conflict marker found in file $ROOT_DIR$file\n"
     ERRORS=""
