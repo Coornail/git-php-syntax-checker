@@ -11,30 +11,22 @@ do
   # Check for conflict markers
   ERRORS=$(grep '>>>>>>' $file | grep -v 'Binary')
   if [ "$ERRORS" != "" ]; then
-    ERRORS_BUFFER="$ERRORS_BUFFER\n* Conflict marker found in file $file"
-    echo "Conflict marker found in file: $file "
+    ERRORS_BUFFER="$ERRORS_BUFFER- Conflict marker found in file $file\n"
     ERRORS=""
   fi
 
   # PHP syntax check for php files
   EXTENSION=$(echo "$file" | grep -E ".php$|.module$|.inc$|.install$")
   if [ "$EXTENSION" != "" ]; then
-    echo "Checking file: $file"
     ERRORS=$(php -l $ROOT_DIR$file 2>&1 | grep "Parse error")
     if [ "$ERRORS" != "" ]; then
-      if [ "$ERRORS_BUFFER" != "" ]; then
-        ERRORS_BUFFER="$ERRORS_BUFFER\n* $ERRORS"
-      else
-        ERRORS_BUFFER="$ERRORS"
-      fi
-      echo "Syntax errors found in file: $file "
+      ERRORS_BUFFER="$ERRORS_BUFFER- $ERRORS\n"
     fi
   fi
 done
 
 # Print errors
 if [ "$ERRORS_BUFFER" != "" ]; then
-    echo
     echo "These errors were found in try-to-commit files: "
     echo -e $ERRORS_BUFFER
     echo
